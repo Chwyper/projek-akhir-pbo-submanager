@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.subsmanager.gui.controller.LoginController"
+    prefWidth="1100" prefHeight="700"
+    style="-fx-background-color: #f4f6f9;">
+
+    <VBox
+        alignment="CENTER"
+        spacing="12"
+        prefWidth="420"
+        AnchorPane.topAnchor="0"
+        AnchorPane.bottomAnchor="0"
+        AnchorPane.leftAnchor="340"
+        AnchorPane.rightAnchor="340">
+
+        <padding>
+            <Insets top="40" right="40" bottom="40" left="40"/>
+        </padding>
+
+        <!-- Card putih -->
+        <VBox spacing="12" style="-fx-background-color: white;
+                                   -fx-background-radius: 12;
+                                   -fx-padding: 40;
+                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);">
+
+            <!-- Judul -->
+            <Label text="Subscription Manager"
+                   style="-fx-font-size: 24px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #1a1a2e;"/>
+
+            <!-- Subtitle -->
+            <Label text="Masuk ke akun Anda"
+                   style="-fx-font-size: 14px;
+                          -fx-text-fill: #666666;"/>
+
+            <Region prefHeight="8"/>
+
+            <!-- Email -->
+            <Label text="Email"
+                   style="-fx-font-size: 13px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #333333;"/>
+            <TextField fx:id="emailField"
+                       promptText="contoh@email.com"
+                       prefHeight="40"
+                       style="-fx-background-radius: 8;
+                              -fx-border-radius: 8;
+                              -fx-border-color: #dddddd;
+                              -fx-padding: 8 12 8 12;
+                              -fx-font-size: 13px;"/>
+
+            <!-- Password -->
+            <Label text="Password"
+                   style="-fx-font-size: 13px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #333333;"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="Masukkan password"
+                           prefHeight="40"
+                           style="-fx-background-radius: 8;
+                                  -fx-border-radius: 8;
+                                  -fx-border-color: #dddddd;
+                                  -fx-padding: 8 12 8 12;
+                                  -fx-font-size: 13px;"/>
+
+            <!-- Error label -->
+            <Label fx:id="errorLabel"
+                   text=""
+                   style="-fx-text-fill: #e74c3c;
+                          -fx-font-size: 12px;"/>
+
+            <!-- Tombol Login -->
+            <Button text="Login"
+                    onAction="#handleLogin"
+                    prefWidth="Infinity"
+                    prefHeight="44"
+                    style="-fx-background-color: #4f46e5;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 8;
+                           -fx-cursor: hand;"/>
+
+            <Separator/>
+
+            <!-- Tombol Register -->
+            <Button text="Belum punya akun? Daftar"
+                    onAction="#handleRegister"
+                    prefWidth="Infinity"
+                    prefHeight="40"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #4f46e5;
+                           -fx-font-size: 13px;
+                           -fx-cursor: hand;
+                           -fx-border-color: #4f46e5;
+                           -fx-border-radius: 8;
+                           -fx-background-radius: 8;"/>
+        </VBox>
+    </VBox>
+</AnchorPane>

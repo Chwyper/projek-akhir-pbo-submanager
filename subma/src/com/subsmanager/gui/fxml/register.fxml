@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.subsmanager.gui.controller.RegisterController"
+    prefWidth="1100" prefHeight="700"
+    style="-fx-background-color: #f4f6f9;">
+
+    <VBox
+        alignment="CENTER"
+        spacing="0"
+        prefWidth="460"
+        AnchorPane.topAnchor="0"
+        AnchorPane.bottomAnchor="0"
+        AnchorPane.leftAnchor="320"
+        AnchorPane.rightAnchor="320">
+
+        <!-- Card putih -->
+        <VBox spacing="14"
+              style="-fx-background-color: white;
+                     -fx-background-radius: 12;
+                     -fx-padding: 40;
+                     -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.08),10,0,0,4);">
+
+            <!-- Judul -->
+            <Label text="💳 Subscription Manager"
+                   style="-fx-font-size: 22px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #1a1a2e;"/>
+
+            <Label text="Buat akun baru"
+                   style="-fx-font-size: 14px;
+                          -fx-text-fill: #666666;"/>
+
+            <Region prefHeight="6"/>
+
+            <!-- Email -->
+            <Label text="Email"
+                   style="-fx-font-size: 13px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #333333;"/>
+            <TextField fx:id="emailField"
+                       promptText="contoh@email.com"
+                       prefHeight="40"
+                       style="-fx-background-radius: 8;
+                              -fx-border-radius: 8;
+                              -fx-border-color: #dddddd;
+                              -fx-padding: 0 12 0 12;
+                              -fx-font-size: 13px;"/>
+
+            <!-- Password -->
+            <Label text="Password"
+                   style="-fx-font-size: 13px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #333333;"/>
+            <PasswordField fx:id="passwordField"
+                           promptText="Minimal 6 karakter"
+                           prefHeight="40"
+                           style="-fx-background-radius: 8;
+                                  -fx-border-radius: 8;
+                                  -fx-border-color: #dddddd;
+                                  -fx-padding: 0 12 0 12;
+                                  -fx-font-size: 13px;"/>
+
+            <!-- Konfirmasi Password -->
+            <Label text="Konfirmasi Password"
+                   style="-fx-font-size: 13px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #333333;"/>
+            <PasswordField fx:id="confirmPasswordField"
+                           promptText="Ulangi password"
+                           prefHeight="40"
+                           style="-fx-background-radius: 8;
+                                  -fx-border-radius: 8;
+                                  -fx-border-color: #dddddd;
+                                  -fx-padding: 0 12 0 12;
+                                  -fx-font-size: 13px;"/>
+
+            <!-- Indikator kekuatan password -->
+            <VBox spacing="4">
+                <Label text="Kekuatan Password"
+                       style="-fx-font-size: 11px;
+                              -fx-text-fill: #999999;"/>
+                <ProgressBar fx:id="passwordStrengthBar"
+                             prefWidth="Infinity"
+                             prefHeight="6"
+                             progress="0"
+                             style="-fx-accent: #e74c3c;"/>
+                <Label fx:id="passwordStrengthLabel"
+                       text=""
+                       style="-fx-font-size: 11px;
+                              -fx-text-fill: #999999;"/>
+            </VBox>
+
+            <!-- Error label -->
+            <Label fx:id="errorLabel"
+                   text=""
+                   wrapText="true"
+                   style="-fx-text-fill: #e74c3c;
+                          -fx-font-size: 12px;"/>
+
+            <!-- Success label -->
+            <Label fx:id="successLabel"
+                   text=""
+                   wrapText="true"
+                   style="-fx-text-fill: #27ae60;
+                          -fx-font-size: 12px;"/>
+
+            <!-- Tombol Register -->
+            <Button text="Daftar Sekarang"
+                    onAction="#handleRegister"
+                    prefWidth="Infinity"
+                    prefHeight="44"
+                    style="-fx-background-color: #4f46e5;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 8;
+                           -fx-cursor: hand;"/>
+
+            <Separator/>
+
+            <!-- Tombol kembali ke login -->
+            <Button text="Sudah punya akun? Login"
+                    onAction="#handleBackToLogin"
+                    prefWidth="Infinity"
+                    prefHeight="40"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #4f46e5;
+                           -fx-font-size: 13px;
+                           -fx-cursor: hand;
+                           -fx-border-color: #4f46e5;
+                           -fx-border-radius: 8;
+                           -fx-background-radius: 8;"/>
+        </VBox>
+    </VBox>
+</AnchorPane>

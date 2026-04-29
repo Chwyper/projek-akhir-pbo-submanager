@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="com.subsmanager.gui.controller.CoinStoreController"
+    prefWidth="1100" prefHeight="700"
+    style="-fx-background-color: #f4f6f9;">
+    <fx:define>
+        <ToggleGroup fx:id="typeToggle"/>
+    </fx:define>
+
+    <!-- ===== SIDEBAR KIRI ===== -->
+    <left>
+        <VBox
+            prefWidth="220" spacing="4"
+            style="-fx-background-color: #1a1a2e; -fx-padding: 24;">
+
+            <Label text="💳 SubsManager"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold;
+                          -fx-text-fill: white; -fx-padding: 0 0 24 0;"/>
+
+            <Button text="🏠  Dashboard"
+                    onAction="#showDashboard"
+                    prefWidth="Infinity" prefHeight="44"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #aaaacc; -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="📋  Langganan Saya"
+                    onAction="#showSubscriptions"
+                    prefWidth="Infinity" prefHeight="44"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #aaaacc; -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="💰  Keuangan"
+                    onAction="#showFinancial"
+                    prefWidth="Infinity" prefHeight="44"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #aaaacc; -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button text="🪙  Toko Koin"
+                    prefWidth="Infinity" prefHeight="44"
+                    style="-fx-background-color: #4f46e5;
+                           -fx-text-fill: white; -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Label fx:id="userEmailLabel"
+                   text="user@email.com"
+                   style="-fx-text-fill: #aaaacc; -fx-font-size: 11px;"/>
+
+            <Button text="🚪  Logout"
+                    onAction="#handleLogout"
+                    prefWidth="Infinity" prefHeight="40"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #ff6b6b; -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8; -fx-cursor: hand;"/>
+        </VBox>
+    </left>
+
+    <!-- ===== KONTEN UTAMA ===== -->
+    <center>
+    	<ScrollPane
+        fitToWidth="true"
+        hbarPolicy="NEVER"
+        style="-fx-background-color: transparent;
+               -fx-background: transparent;
+               -fx-border-color: transparent;">
+        <VBox spacing="24" style="-fx-padding: 32;">
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT">
+                <VBox spacing="4">
+                    <Label text="🪙 Toko Koin"
+                           style="-fx-font-size: 24px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1a1a2e;"/>
+                    <Label text="Beli koin untuk fitur premium"
+                           style="-fx-font-size: 13px;
+                                  -fx-text-fill: #666666;"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Kartu saldo koin -->
+                <VBox spacing="4" alignment="CENTER_RIGHT"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 10;
+                             -fx-padding: 14 20 14 20;
+                             -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.07),8,0,0,2);">
+                    <Label text="Saldo Koin"
+                           style="-fx-font-size: 11px;
+                                  -fx-text-fill: #999999;"/>
+                    <Label fx:id="coinBalanceLabel"
+                           text="0 koin"
+                           style="-fx-font-size: 20px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #f39c12;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Paket koin -->
+            <Label text="Pilih Paket Koin"
+                   style="-fx-font-size: 16px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: #1a1a2e;"/>
+
+            <HBox spacing="20">
+
+                <!-- Paket Starter -->
+                <VBox fx:id="cardStarter" spacing="12"
+                      prefWidth="220" prefHeight="200"
+                      alignment="CENTER"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-padding: 24;
+                             -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.07),8,0,0,2);
+                             -fx-cursor: hand;"
+                      onMouseClicked="#selectStarter">
+                    <Label text="🪙"
+                           style="-fx-font-size: 32px;"/>
+                    <Label text="Starter"
+                           style="-fx-font-size: 16px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1a1a2e;"/>
+                    <Label text="50 koin"
+                           style="-fx-font-size: 28px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #4f46e5;"/>
+                    <Label text="Rp 10.000"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #666666;"/>
+                    <Label text="Rp 200 / koin"
+                           style="-fx-font-size: 11px;
+                                  -fx-text-fill: #999999;"/>
+                </VBox>
+
+                <!-- Paket Regular -->
+                <VBox fx:id="cardRegular" spacing="12"
+                      prefWidth="220" prefHeight="200"
+                      alignment="CENTER"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-padding: 24;
+                             -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.07),8,0,0,2);
+                             -fx-cursor: hand;"
+                      onMouseClicked="#selectRegular">
+                    <Label text="🪙"
+                           style="-fx-font-size: 32px;"/>
+                    <Label text="Regular"
+                           style="-fx-font-size: 16px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1a1a2e;"/>
+                    <Label text="150 koin"
+                           style="-fx-font-size: 28px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #4f46e5;"/>
+                    <Label text="Rp 25.000"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #666666;"/>
+                    <Label text="Rp 167 / koin"
+                           style="-fx-font-size: 11px;
+                                  -fx-text-fill: #999999;"/>
+                </VBox>
+
+                <!-- Paket Pro -->
+                <VBox fx:id="cardPro" spacing="12"
+                      prefWidth="220" prefHeight="200"
+                      alignment="CENTER"
+                      style="-fx-background-color: white;
+                             -fx-background-radius: 14;
+                             -fx-padding: 24;
+                             -fx-border-color: #4f46e5;
+                             -fx-border-radius: 14;
+                             -fx-border-width: 2;
+                             -fx-effect: dropshadow(gaussian,rgba(79,70,229,0.15),12,0,0,4);
+                             -fx-cursor: hand;"
+                      onMouseClicked="#selectPro">
+                    <Label text="⭐ TERBAIK"
+                           style="-fx-font-size: 10px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #4f46e5;
+                                  -fx-background-color: #eef2ff;
+                                  -fx-background-radius: 20;
+                                  -fx-padding: 3 10 3 10;"/>
+                    <Label text="🪙"
+                           style="-fx-font-size: 32px;"/>
+                    <Label text="Pro"
+                           style="-fx-font-size: 16px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #1a1a2e;"/>
+                    <Label text="350 koin"
+                           style="-fx-font-size: 28px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #4f46e5;"/>
+                    <Label text="Rp 50.000"
+                           style="-fx-font-size: 14px;
+                                  -fx-text-fill: #666666;"/>
+                    <Label text="Rp 143 / koin"
+                           style="-fx-font-size: 11px;
+                                  -fx-text-fill: #999999;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Panel pembayaran -->
+            <VBox fx:id="paymentPanel" spacing="16"
+                  managed="false" visible="false"
+                  style="-fx-background-color: white;
+                         -fx-background-radius: 12;
+                         -fx-padding: 24;
+                         -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.07),8,0,0,2);">
+
+                <Label text="Metode Pembayaran"
+                       style="-fx-font-size: 15px;
+                              -fx-font-weight: bold;
+                              -fx-text-fill: #1a1a2e;"/>
+
+                <HBox spacing="12" alignment="CENTER_LEFT">
+                    <Label text="Paket dipilih:"
+                           style="-fx-font-size: 13px;
+                                  -fx-text-fill: #666666;"/>
+                    <Label fx:id="selectedPackageLabel"
+                           text="-"
+                           style="-fx-font-size: 13px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #4f46e5;"/>
+                </HBox>
+
+                <ComboBox fx:id="paymentMethodCombo"
+                          promptText="Pilih metode pembayaran..."
+                          prefWidth="320" prefHeight="38"
+                          style="-fx-background-radius: 8;
+                                 -fx-font-size: 13px;"/>
+
+                <!-- Info pembayaran -->
+                <VBox fx:id="paymentInfoBox" spacing="6"
+                      managed="false" visible="false"
+                      style="-fx-background-color: #f8f9ff;
+                             -fx-background-radius: 8;
+                             -fx-padding: 16;">
+                    <Label fx:id="paymentInfoLabel"
+                           text=""
+                           style="-fx-font-size: 13px;
+                                  -fx-text-fill: #333333;"/>
+                    <Label fx:id="paymentNumberLabel"
+                           text=""
+                           style="-fx-font-size: 16px;
+                                  -fx-font-weight: bold;
+                                  -fx-text-fill: #4f46e5;"/>
+                </VBox>
+
+                <Label fx:id="statusLabel"
+                       text=""
+                       style="-fx-font-size: 12px;
+                              -fx-text-fill: #666666;"/>
+
+                <HBox spacing="12">
+                    <Button text="Batalkan"
+                            onAction="#handleBatalkan"
+                            prefHeight="40"
+                            style="-fx-background-color: #eeeeee;
+                                   -fx-text-fill: #555555;
+                                   -fx-background-radius: 8;
+                                   -fx-cursor: hand;
+                                   -fx-padding: 0 20 0 20;"/>
+                    <Button fx:id="bayarBtn"
+                            text="💳 Bayar Sekarang"
+                            onAction="#handleBayar"
+                            prefHeight="40"
+                            style="-fx-background-color: #4f46e5;
+                                   -fx-text-fill: white;
+                                   -fx-font-size: 13px;
+                                   -fx-font-weight: bold;
+                                   -fx-background-radius: 8;
+                                   -fx-cursor: hand;
+                                   -fx-padding: 0 20 0 20;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Info fitur koin -->
+            <VBox spacing="10"
+                  style="-fx-background-color: #eef2ff;
+                         -fx-background-radius: 10;
+                         -fx-padding: 16;">
+                <Label text="💡 Kegunaan Koin"
+                       style="-fx-font-size: 13px;
+                              -fx-font-weight: bold;
+                              -fx-text-fill: #4f46e5;"/>
+                <HBox spacing="24">
+                    <Label text="📄 Export PDF = 10 koin"
+                           style="-fx-font-size: 12px;
+                                  -fx-text-fill: #555555;"/>
+                    <Label text="📊 Export Excel = 15 koin"
+                           style="-fx-font-size: 12px;
+                                  -fx-text-fill: #555555;"/>
+                 
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+    </center>
+</BorderPane>
