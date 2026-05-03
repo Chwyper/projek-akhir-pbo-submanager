@@ -1,6 +1,7 @@
 package com.subsmanager.gui.controller;
 
 import com.subsmanager.SessionManager;
+import com.subsmanager.auth.Admin;
 import com.subsmanager.auth.User;
 import com.subsmanager.db.SubscriptionDAO;
 import com.subsmanager.db.UserDAO;
@@ -71,11 +72,19 @@ public class LoginController {
                 + email + ", " + subscriptions.size()
                 + " langganan dimuat.");
 
-            // Set session lalu navigasi ke dashboard
+            // Set session lalu navigasi sesuai role
             Platform.runLater(() -> {
                 SessionManager.setCurrentUser(user);
-                SessionManager.navigateTo(
-                    "/com/subsmanager/gui/fxml/dashboard.fxml");
+
+                if (user instanceof Admin) {
+                    // Admin langsung ke Admin Panel
+                    SessionManager.navigateTo(
+                        "/com/subsmanager/gui/fxml/adminpanel.fxml");
+                } else {
+                    // User biasa ke Dashboard
+                    SessionManager.navigateTo(
+                        "/com/subsmanager/gui/fxml/dashboard.fxml");
+                }
             });
 
         }).start();

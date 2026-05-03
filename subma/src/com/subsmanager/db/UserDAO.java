@@ -1,5 +1,6 @@
 package com.subsmanager.db;
 
+import com.subsmanager.auth.Admin;
 import com.subsmanager.auth.User;
 import com.subsmanager.coin.CoinBalance;
 
@@ -26,7 +27,7 @@ public class UserDAO {
      */
     public static User login(String email, String password) {
         String sql =
-            "SELECT u.id, u.email, u.password, " +
+            "SELECT u.id, u.email, u.password, u.is_admin, " +
             "       COALESCE(cb.balance, 0) AS coin_balance " +
             "FROM users u " +
             "LEFT JOIN coin_balances cb ON cb.user_id = u.id " +
@@ -41,10 +42,23 @@ public class UserDAO {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                User user = new User();
-                user.setId(rs.getLong("id"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
+                boolean isAdmin = rs.getBoolean("is_admin");
+
+                // Buat Admin atau User tergantung kolom is_admin
+                User user;
+                if (isAdmin) {
+                    user = new Admin(
+                        rs.getLong("id"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        "SUPER"
+                    );
+                } else {
+                    user = new User();
+                    user.setId(rs.getLong("id"));
+                    user.setEmail(rs.getString("email"));
+                    user.setPassword(rs.getString("password"));
+                }
 
                 // Set saldo koin
                 CoinBalance cb = new CoinBalance(
@@ -54,7 +68,8 @@ public class UserDAO {
                 user.setCoinBalance(cb);
 
                 System.out.println(
-                    "[UserDAO] Login berhasil: " + email);
+                    "[UserDAO] Login berhasil: " + email +
+                    (isAdmin ? " (ADMIN)" : ""));
                 return user;
             }
 

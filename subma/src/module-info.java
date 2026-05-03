@@ -25,5 +25,7 @@ module subma {
     opens com.subsmanager.auth to javafx.base;
     opens com.subsmanager.catalog to javafx.base;
     opens com.subsmanager.coin to javafx.base;
-    opens com.subsmanager.db to javafx.base;
+    opens com.subsmanager.db to javafx.base, javafx.fxml;
+    
+    
 }
