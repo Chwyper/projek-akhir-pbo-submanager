@@ -381,6 +381,11 @@ public class CoinStoreController implements Initializable {
             "/com/subsmanager/gui/fxml/financial.fxml");
     }
 
+
+    @FXML private void showCoinHistory() {
+        SessionManager.navigateTo(
+            "/com/subsmanager/gui/fxml/coinhistory.fxml");
+    }
     @FXML private void handleLogout() {
         SessionManager.logout();
     }

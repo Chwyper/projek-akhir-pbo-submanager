@@ -140,6 +140,11 @@ public class DashboardController implements Initializable {
             "/com/subsmanager/gui/fxml/financial.fxml");
     }
 
+
+    @FXML private void showCoinHistory() {
+        SessionManager.navigateTo(
+            "/com/subsmanager/gui/fxml/coinhistory.fxml");
+    }
     @FXML private void showCoinStore() {
         SessionManager.navigateTo(
             "/com/subsmanager/gui/fxml/coinstore.fxml");
