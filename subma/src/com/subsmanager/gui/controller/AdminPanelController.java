@@ -85,7 +85,6 @@ public class AdminPanelController implements Initializable {
     @FXML private TextField tfSvcDomain;
     @FXML private TextField tfSvcCancelUrl;
     @FXML private TextField tfSvcKategori;
-    @FXML private ComboBox<String> cbSvcCurrency;
     @FXML private Label labelSvcError;
 
     // -- Tiers --
@@ -258,10 +257,7 @@ public class AdminPanelController implements Initializable {
             }
         });
 
-        // Currency combo
-        cbSvcCurrency.setItems(FXCollections.observableArrayList(
-            "IDR", "USD", "EUR", "GBP"));
-        cbSvcCurrency.setValue("USD");
+
     }
 
     // ═══════════════════════════════════════════════════════
@@ -360,7 +356,7 @@ public class AdminPanelController implements Initializable {
         svc.setDomain(domain);
         svc.setCancellationUrl(tfSvcCancelUrl.getText().trim());
         svc.setCategory(tfSvcKategori.getText().trim());
-        svc.setDefaultCurrency(cbSvcCurrency.getValue());
+        svc.setDefaultCurrency("USD"); // default USD
 
         new Thread(() -> {
             long id = ServiceDAO.saveService(svc);
@@ -372,7 +368,6 @@ public class AdminPanelController implements Initializable {
                     tfSvcDomain.clear();
                     tfSvcCancelUrl.clear();
                     tfSvcKategori.clear();
-                    cbSvcCurrency.setValue("USD");
                 } else {
                     labelSvcError.setText(
                         "Gagal menyimpan layanan ke database.");

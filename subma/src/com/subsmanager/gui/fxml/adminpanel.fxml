@@ -234,11 +234,8 @@
                                                promptText="Kategori (misal: Streaming)"
                                                GridPane.columnIndex="0"
                                                GridPane.rowIndex="2"
-                                               prefWidth="140"/>
-                                    <ComboBox fx:id="cbSvcCurrency"
-                                              GridPane.columnIndex="1"
-                                              GridPane.rowIndex="2"
-                                              prefWidth="140"/>
+                                               GridPane.columnSpan="2"
+                                               prefWidth="290"/>
                                 </GridPane>
                                 <HBox spacing="8" alignment="CENTER_LEFT">
                                     <Button text="Tambah Layanan"
@@ -325,3 +322,4 @@
     </center>
 
 </BorderPane>
+	

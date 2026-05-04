@@ -104,6 +104,7 @@ public class DashboardController implements Initializable {
 
             	OverlayController overlay = new OverlayController(0, 0);
             	SubscriptionManager manager = new SubscriptionManager(overlay);
+            	manager.loadSubscriptions(user); // load data dari user session
 
             	FinancialSummary summary = new FinancialSummary(manager, converter);
 

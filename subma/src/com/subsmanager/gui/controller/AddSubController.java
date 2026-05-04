@@ -5,6 +5,7 @@ import com.subsmanager.SessionManager;
 import com.subsmanager.auth.User;
 import com.subsmanager.catalog.Service;
 import com.subsmanager.catalog.ServiceTier;
+import com.subsmanager.db.ServiceDAO;
 import com.subsmanager.db.SubscriptionDAO;
 import com.subsmanager.subscription.model.BillingCycle;
 import com.subsmanager.subscription.model.CustomSubscription;
@@ -80,54 +81,33 @@ public class AddSubController implements Initializable {
     }
 
     /**
-     * Isi dummy katalog layanan.
+     * Load katalog layanan dari database di background thread.
+     * Menggantikan katalog hardcoded sebelumnya.
      */
     private void setupKatalog() {
-        // TODO: load dari database / ServiceRepository
-        Service netflix = new Service();
-        netflix.setName("Netflix");
-        netflix.setDomain("netflix.com");
-        netflix.setCancellationUrl("https://netflix.com/cancelplan");
-        netflix.setDefaultCurrency("USD");
-        netflix.addTier(createTier("Basic"));
-        netflix.addTier(createTier("Standard"));
-        netflix.addTier(createTier("Premium"));
+        serviceCombo.setDisable(true);
 
-        Service spotify = new Service();
-        spotify.setName("Spotify");
-        spotify.setDomain("spotify.com");
-        spotify.setCancellationUrl("https://spotify.com/account/subscription");
-        spotify.setDefaultCurrency("USD");
-        spotify.addTier(createTier("Free"));
-        spotify.addTier(createTier("Premium"));
-        spotify.addTier(createTier("Duo"));
-        spotify.addTier(createTier("Family"));
+        new Thread(() -> {
+            List<Service> services = ServiceDAO.loadAllServices();
 
-        Service youtube = new Service();
-        youtube.setName("YouTube Premium");
-        youtube.setDomain("youtube.com");
-        youtube.setCancellationUrl("https://youtube.com/paid_memberships");
-        youtube.setDefaultCurrency("USD");
-        youtube.addTier(createTier("Individual"));
-        youtube.addTier(createTier("Family"));
+            javafx.application.Platform.runLater(() -> {
+                katalogList.clear();
+                serviceCombo.getItems().clear();
 
-        katalogList.add(netflix);
-        katalogList.add(spotify);
-        katalogList.add(youtube);
+                for (Service s : services) {
+                    // Load tier tiap service dari DB
+                    List<com.subsmanager.catalog.ServiceTier> tiers =
+                        ServiceDAO.loadTiersByService(s.getId());
+                    tiers.forEach(s::addTier);
+                    katalogList.add(s);
+                    serviceCombo.getItems().add(s.getName());
+                }
 
-        // Isi ComboBox layanan
-        for (Service s : katalogList) {
-            serviceCombo.getItems().add(s.getName());
-        }
-    }
-
-    /**
-     * Helper buat ServiceTier dummy.
-     */
-    private ServiceTier createTier(String nama) {
-        ServiceTier t = new ServiceTier();
-        t.setTierName(nama);
-        return t;
+                serviceCombo.setDisable(false);
+                System.out.println("[AddSubController] Katalog dimuat: "
+                    + katalogList.size() + " layanan.");
+            });
+        }).start();
     }
 
     /**
