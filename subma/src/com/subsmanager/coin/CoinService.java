@@ -36,18 +36,34 @@ public class CoinService {
     // ── Package Initialization ────────────────────────────
 
     /**
-     * Menginisialisasi paket coin yang tersedia
+     * Menginisialisasi paket coin yang tersedia dengan
+     * memuat data dari database via CoinDAO.loadPackages().
+     *
+     * <p>Jika DB tidak dapat diakses (misal: offline), method
+     * ini akan mencetak pesan error ke stderr dan list
+     * tetap kosong. Hal ini disengaja agar error FK tidak
+     * tersembunyi oleh data fallback yang salah ID-nya.</p>
      */
     private void initializePackages() {
-        availablePackages.add(new CoinPackage(
-            1L, "Starter", 50, 10000, "IDR"
-        ));
-        availablePackages.add(new CoinPackage(
-            2L, "Regular", 150, 25000, "IDR"
-        ));
-        availablePackages.add(new CoinPackage(
-            3L, "Pro", 350, 50000, "IDR"
-        ));
+        List<CoinPackage> fromDB = CoinDAO.loadPackages();
+        if (!fromDB.isEmpty()) {
+            availablePackages.addAll(fromDB);
+            System.out.println("[CoinService] " +
+                fromDB.size() + " paket koin berhasil dimuat dari DB.");
+        } else {
+            System.err.println("[CoinService] PERINGATAN: " +
+                "Tidak ada paket koin dari DB. " +
+                "Periksa koneksi database dan tabel coin_packages.");
+        }
+    }
+
+    /**
+     * Memuat ulang daftar paket koin dari database.
+     * Berguna jika data paket berubah saat aplikasi berjalan.
+     */
+    public void reloadPackages() {
+        availablePackages.clear();
+        initializePackages();
     }
 
     // ── Core Methods ─────────────────────────────────────

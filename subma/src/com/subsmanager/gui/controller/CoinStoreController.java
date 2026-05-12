@@ -187,23 +187,43 @@ public class CoinStoreController implements Initializable {
 
     // ===== Pilih Paket =====
 
+    /**
+     * Mengambil paket koin berdasarkan urutan (index) dalam list.
+     * List sudah diurutkan ORDER BY price ASC dari CoinDAO.loadPackages(),
+     * sehingga index 0 = Starter, 1 = Regular, 2 = Pro — selalu konsisten
+     * meski ID di database berubah setelah seed ulang.
+     *
+     * @param index posisi paket dalam list (0-based)
+     * @return CoinPackage yang sesuai, atau null jika index di luar range
+     */
+    private CoinPackage getPackageByIndex(int index) {
+        java.util.List<CoinPackage> pkgs = coinService.getAvailablePackages();
+        if (pkgs == null || index >= pkgs.size()) {
+            System.err.println("[CoinStoreController] Paket index " +
+                index + " tidak ditemukan. Total paket: " +
+                (pkgs != null ? pkgs.size() : 0));
+            return null;
+        }
+        return pkgs.get(index);
+    }
+
     @FXML
     private void selectStarter() {
-        selectedPackage = coinService.getPackageById(1L);
+        selectedPackage = getPackageByIndex(0);
         highlightCard(cardStarter);
         showPaymentPanel();
     }
 
     @FXML
     private void selectRegular() {
-        selectedPackage = coinService.getPackageById(2L);
+        selectedPackage = getPackageByIndex(1);
         highlightCard(cardRegular);
         showPaymentPanel();
     }
 
     @FXML
     private void selectPro() {
-        selectedPackage = coinService.getPackageById(3L);
+        selectedPackage = getPackageByIndex(2);
         highlightCard(cardPro);
         showPaymentPanel();
     }
