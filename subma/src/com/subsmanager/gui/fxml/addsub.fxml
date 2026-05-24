@@ -138,18 +138,53 @@
                                   -fx-font-weight: bold;
                                   -fx-text-fill: #1a1a2e;"/>
 
-                    <!-- Pilih dari katalog -->
+                    <!-- Pilih dari katalog - Search Hybrid -->
                     <VBox fx:id="katalogBox" spacing="6">
                         <Label text="Pilih Layanan"
                                style="-fx-font-size: 13px;
                                       -fx-font-weight: bold;
                                       -fx-text-fill: #333333;"/>
-                        <ComboBox fx:id="serviceCombo"
-                                  promptText="Pilih layanan..."
-                                  prefWidth="Infinity" prefHeight="38"
-                                  onAction="#handleServiceSelected"
+
+                        <!-- Input pencarian -->
+                        <TextField fx:id="serviceSearchField"
+                                   promptText="Cari layanan..."
+                                   prefHeight="38"
+                                   style="-fx-background-radius: 8;
+                                          -fx-border-radius: 8;
+                                          -fx-border-color: #dddddd;
+                                          -fx-padding: 0 12 0 12;
+                                          -fx-font-size: 13px;"/>
+
+                        <!-- Daftar saran (muncul saat mengetik) -->
+                        <ListView fx:id="serviceListView"
+                                  prefHeight="150"
+                                  visible="false" managed="false"
                                   style="-fx-background-radius: 8;
+                                         -fx-border-radius: 8;
+                                         -fx-border-color: #dddddd;
                                          -fx-font-size: 13px;"/>
+
+                        <!-- Chip layanan yang sudah dipilih -->
+                        <HBox fx:id="selectedServiceBox"
+                              spacing="8" alignment="CENTER_LEFT"
+                              visible="false" managed="false"
+                              style="-fx-background-color: #eef2ff;
+                                     -fx-background-radius: 8;
+                                     -fx-padding: 8 12 8 12;">
+                            <Label fx:id="selectedServiceLabel"
+                                   text=""
+                                   style="-fx-font-size: 13px;
+                                          -fx-text-fill: #4f46e5;
+                                          -fx-font-weight: bold;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="x"
+                                    onAction="#handleClearService"
+                                    style="-fx-background-color: transparent;
+                                           -fx-text-fill: #4f46e5;
+                                           -fx-font-size: 12px;
+                                           -fx-cursor: hand;
+                                           -fx-padding: 0 4 0 4;"/>
+                        </HBox>
                     </VBox>
 
                     <!-- Custom nama (muncul saat mode Custom) -->
@@ -167,6 +202,14 @@
                                           -fx-border-color: #dddddd;
                                           -fx-padding: 0 12 0 12;
                                           -fx-font-size: 13px;"/>
+                        <!-- Warning jika nama sama dengan layanan di katalog -->
+                        <Label fx:id="katalogWarningLabel"
+                               text=""
+                               visible="false" managed="false"
+                               style="-fx-text-fill: #e67e22;
+                                      -fx-font-size: 11px;
+                                      -fx-font-style: italic;
+                                      -fx-padding: 0 0 0 2;"/>
                     </VBox>
 
                     <!-- Tier -->

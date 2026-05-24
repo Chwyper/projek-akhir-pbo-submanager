@@ -161,26 +161,33 @@ public class UserDAO {
      * @param user user yang saldonya berubah
      */
     public static void updateCoinBalance(User user) {
+        // UPSERT: insert jika belum ada, update jika sudah ada.
+        // Mencegah silent failure ketika baris coin_balances belum dibuat
+        // (misalnya akun yang di-insert manual via SQL Editor).
         String sql =
-            "UPDATE coin_balances SET balance = ?, " +
-            "updated_at = NOW() WHERE user_id = ?";
+            "INSERT INTO coin_balances (user_id, balance, updated_at) " +
+            "VALUES (?, ?, NOW()) " +
+            "ON CONFLICT (user_id) DO UPDATE " +
+            "SET balance = EXCLUDED.balance, updated_at = NOW()";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, user.getCoinAmount());
-            ps.setLong(2, user.getId());
+            ps.setLong(1, user.getId());
+            ps.setInt (2, user.getCoinAmount());
             int rows = ps.executeUpdate();
 
             if (rows > 0) {
                 System.out.println(
                     "[UserDAO] Saldo koin diperbarui: "
-                    + user.getCoinAmount() + " koin");
+                    + user.getCoinAmount() + " koin (user_id="
+                    + user.getId() + ")");
             }
 
         } catch (SQLException e) {
             System.err.println(
                 "[UserDAO] Error update koin: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

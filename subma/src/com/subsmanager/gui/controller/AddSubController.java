@@ -15,6 +15,8 @@ import com.subsmanager.subscription.model.Subscription;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.time.ZoneId;
@@ -49,7 +51,10 @@ public class AddSubController implements Initializable {
     @FXML private VBox       customNamaBox;
     @FXML private VBox       customUrlBox;
 
-    @FXML private ComboBox<String>  serviceCombo;
+    @FXML private TextField         serviceSearchField;
+    @FXML private ListView<String>   serviceListView;
+    @FXML private HBox               selectedServiceBox;
+    @FXML private Label              selectedServiceLabel;
     @FXML private TextField         customNamaField;
     @FXML private ComboBox<String>  tierCombo;
     @FXML private ComboBox<String>  currencyCombo;
@@ -58,6 +63,7 @@ public class AddSubController implements Initializable {
     @FXML private DatePicker        tanggalPicker;
     @FXML private TextField         customUrlField;
     @FXML private Label             errorLabel;
+    @FXML private Label             katalogWarningLabel;
 
     // ===== Preview =====
     @FXML private Label previewNama;
@@ -84,30 +90,119 @@ public class AddSubController implements Initializable {
      * Load katalog layanan dari database di background thread.
      * Menggantikan katalog hardcoded sebelumnya.
      */
-    private void setupKatalog() {
-        serviceCombo.setDisable(true);
+    /** Jumlah maksimum saran yang ditampilkan di ListView. */
+    private static final int MAX_SUGGESTIONS = 6;
 
+    /** Layanan yang sedang dipilih user dari hasil pencarian. */
+    private Service selectedService = null;
+
+    /**
+     * Load katalog layanan dari DB di background thread.
+     * Tidak mengisi ComboBox lagi — data tersimpan di katalogList
+     * dan difilter secara live saat user mengetik.
+     */
+    private void setupKatalog() {
         new Thread(() -> {
             List<Service> services = ServiceDAO.loadAllServices();
 
             javafx.application.Platform.runLater(() -> {
                 katalogList.clear();
-                serviceCombo.getItems().clear();
-
                 for (Service s : services) {
-                    // Load tier tiap service dari DB
                     List<com.subsmanager.catalog.ServiceTier> tiers =
                         ServiceDAO.loadTiersByService(s.getId());
                     tiers.forEach(s::addTier);
                     katalogList.add(s);
-                    serviceCombo.getItems().add(s.getName());
                 }
-
-                serviceCombo.setDisable(false);
                 System.out.println("[AddSubController] Katalog dimuat: "
                     + katalogList.size() + " layanan.");
             });
         }).start();
+    }
+
+    /**
+     * Filter katalog berdasarkan keyword dan tampilkan di ListView.
+     * Sembunyikan ListView jika keyword kosong atau layanan sudah dipilih.
+     *
+     * @param keyword teks yang diketik user
+     */
+    private void tampilkanSuggestions(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            serviceListView.setVisible(false);
+            serviceListView.setManaged(false);
+            return;
+        }
+
+        String kw = keyword.trim().toLowerCase();
+        List<String> hasil = katalogList.stream()
+            .filter(s -> s.getName().toLowerCase().contains(kw))
+            .limit(MAX_SUGGESTIONS)
+            .map(Service::getName)
+            .collect(java.util.stream.Collectors.toList());
+
+        if (hasil.isEmpty()) {
+            serviceListView.setVisible(false);
+            serviceListView.setManaged(false);
+        } else {
+            serviceListView.getItems().setAll(hasil);
+            serviceListView.setVisible(true);
+            serviceListView.setManaged(true);
+        }
+    }
+
+    /**
+     * Dipanggil saat user mengklik salah satu item di ListView saran.
+     * Simpan layanan yang dipilih, tampilkan chip, sembunyikan ListView.
+     *
+     * @param nama nama layanan yang dipilih
+     */
+    private void handleServicePicked(String nama) {
+        if (nama == null) return;
+
+        selectedService = katalogList.stream()
+            .filter(s -> s.getName().equals(nama))
+            .findFirst().orElse(null);
+
+        if (selectedService != null) {
+            // Tampilkan chip
+            selectedServiceLabel.setText(selectedService.getName());
+            selectedServiceBox.setVisible(true);
+            selectedServiceBox.setManaged(true);
+
+            // Sembunyikan search field dan ListView
+            serviceSearchField.setText("");
+            serviceListView.setVisible(false);
+            serviceListView.setManaged(false);
+            serviceSearchField.setVisible(false);
+            serviceSearchField.setManaged(false);
+
+            // Isi tierCombo dari tiers layanan
+            tierCombo.getItems().clear();
+            for (ServiceTier t : selectedService.getAvailableTiers()) {
+                tierCombo.getItems().add(t.getTierName());
+            }
+            if (!tierCombo.getItems().isEmpty()) {
+                tierCombo.setValue(tierCombo.getItems().get(0));
+            }
+            currencyCombo.setValue(selectedService.getDefaultCurrency());
+            updatePreview();
+        }
+    }
+
+    /**
+     * Hapus layanan yang dipilih dan kembalikan tampilan ke search field.
+     * Dipanggil saat user menekan tombol 'x' pada chip.
+     */
+    @FXML
+    private void handleClearService() {
+        selectedService = null;
+        selectedServiceLabel.setText("");
+        selectedServiceBox.setVisible(false);
+        selectedServiceBox.setManaged(false);
+        serviceSearchField.setVisible(true);
+        serviceSearchField.setManaged(true);
+        serviceSearchField.setText("");
+        tierCombo.getItems().clear();
+        updatePreview();
     }
 
     /**
@@ -130,8 +225,22 @@ public class AddSubController implements Initializable {
      * Setup listener untuk live preview.
      */
     private void setupPreviewListeners() {
+        // Listener search field — filter saran saat mengetik
+        serviceSearchField.textProperty().addListener(
+            (o, ov, nv) -> tampilkanSuggestions(nv));
+
+        // Listener ListView — pilih layanan saat klik item
+        serviceListView.setOnMouseClicked(event -> {
+            String dipilih = serviceListView.getSelectionModel()
+                .getSelectedItem();
+            if (dipilih != null) handleServicePicked(dipilih);
+        });
+
         customNamaField.textProperty().addListener(
-            (o, ov, nv) -> updatePreview());
+            (o, ov, nv) -> {
+                updatePreview();
+                cekNamaCustomVsKatalog(nv);
+            });
         biayaField.textProperty().addListener(
             (o, ov, nv) -> updatePreview());
         tierCombo.valueProperty().addListener(
@@ -172,37 +281,54 @@ public class AddSubController implements Initializable {
         customUrlBox.setManaged(!isPredefined);
 
         // Reset field
-        serviceCombo.setValue(null);
+        selectedService = null;
+        selectedServiceLabel.setText("");
+        selectedServiceBox.setVisible(false);
+        selectedServiceBox.setManaged(false);
+        serviceSearchField.setText("");
+        serviceSearchField.setVisible(true);
+        serviceSearchField.setManaged(true);
+        serviceListView.setVisible(false);
+        serviceListView.setManaged(false);
         tierCombo.getItems().clear();
         errorLabel.setText("");
     }
 
     /**
-     * Dipanggil saat layanan dipilih dari ComboBox katalog.
-     * Update ComboBox tier sesuai layanan yang dipilih.
+     * Cek apakah nama custom yang diketik user cocok dengan
+     * layanan yang sudah ada di katalog predefined.
+     * Tampilkan warning jika cocok, sembunyikan jika tidak.
+     *
+     * @param input teks yang sedang diketik di customNamaField
      */
-    @FXML
-    private void handleServiceSelected() {
-        String selectedName = serviceCombo.getValue();
-        if (selectedName == null) return;
+    private void cekNamaCustomVsKatalog(String input) {
+        if (katalogWarningLabel == null) return;
 
-        Service selected = katalogList.stream()
-            .filter(s -> s.getName().equals(selectedName))
-            .findFirst().orElse(null);
-
-        if (selected != null) {
-            tierCombo.getItems().clear();
-            for (ServiceTier t : selected.getAvailableTiers()) {
-                tierCombo.getItems().add(t.getTierName());
-            }
-            if (!tierCombo.getItems().isEmpty()) {
-                tierCombo.setValue(tierCombo.getItems().get(0));
-            }
-            // Set currency default layanan
-            currencyCombo.setValue(selected.getDefaultCurrency());
+        if (input == null || input.trim().isEmpty()) {
+            katalogWarningLabel.setVisible(false);
+            katalogWarningLabel.setManaged(false);
+            return;
         }
 
-        updatePreview();
+        String keyword = input.trim().toLowerCase();
+
+        // Cari layanan di katalog yang namanya mengandung keyword
+        Service cocok = katalogList.stream()
+            .filter(s -> s.getName().toLowerCase().contains(keyword)
+                || keyword.contains(s.getName().toLowerCase()))
+            .findFirst().orElse(null);
+
+        if (cocok != null) {
+            // FIXED: Escaped the double quotes correctly using \"
+            katalogWarningLabel.setText(
+                "\"" + cocok.getName() + "\" tersedia di katalog. "
+                + "Gunakan mode Dari Katalog untuk data lebih lengkap.");
+            katalogWarningLabel.setVisible(true);
+            katalogWarningLabel.setManaged(true);
+        } else {
+            katalogWarningLabel.setVisible(false);
+            katalogWarningLabel.setManaged(false);
+        }
     }
 
     /**
@@ -212,8 +338,8 @@ public class AddSubController implements Initializable {
         boolean isPredefined = radioPredefined.isSelected();
 
         String nama = isPredefined
-            ? (serviceCombo.getValue() != null
-                ? serviceCombo.getValue() : "Nama Layanan")
+            ? (selectedService != null
+                ? selectedService.getName() : "Nama Layanan")
             : (customNamaField.getText().isEmpty()
                 ? "Nama Layanan" : customNamaField.getText());
 
@@ -247,12 +373,10 @@ public class AddSubController implements Initializable {
 
         if (radioPredefined.isSelected()) {
             // Buat PredefinedSubscription
-            Service selectedService = katalogList.stream()
-                .filter(s -> s.getName()
-                    .equals(serviceCombo.getValue()))
-                .findFirst().orElse(null);
+            // selectedService sudah diset via handleServicePicked()
+            Service pickedService = selectedService;
 
-            ServiceTier selectedTier = selectedService
+            ServiceTier pickedTier = pickedService
                 .getAvailableTiers().stream()
                 .filter(t -> t.getTierName()
                     .equals(tierCombo.getValue()))
@@ -260,7 +384,7 @@ public class AddSubController implements Initializable {
 
             PredefinedSubscription ps = new PredefinedSubscription();
             ps.setId(System.currentTimeMillis());
-            ps.setServiceName(selectedService.getName());
+            ps.setServiceName(pickedService.getName());
             ps.setCost(Double.parseDouble(biayaField.getText()));
             ps.setCurrency(currencyCombo.getValue());
             ps.setBillingDate(Date.from(tanggalPicker.getValue()
@@ -272,8 +396,8 @@ public class AddSubController implements Initializable {
                 : BillingCycle.YEARLY
             );
             ps.setTier(tierCombo.getValue());
-            ps.setService(selectedService);
-            ps.setSelectedTier(selectedTier);
+            ps.setService(pickedService);
+            ps.setSelectedTier(pickedTier);
             sub = ps;
 
         } else {
@@ -340,7 +464,7 @@ public class AddSubController implements Initializable {
         errorLabel.setText("");
 
         if (radioPredefined.isSelected()
-                && serviceCombo.getValue() == null) {
+                && selectedService == null) {
             errorLabel.setText("Pilih layanan dari katalog.");
             return false;
         }

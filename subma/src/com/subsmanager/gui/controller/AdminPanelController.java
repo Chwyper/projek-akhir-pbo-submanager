@@ -351,6 +351,15 @@ public class AdminPanelController implements Initializable {
             return;
         }
 
+        // Cek duplikat — bandingkan dengan serviceList yang sudah di-load
+        boolean duplikat = serviceList.stream()
+            .anyMatch(s -> s.getName().equalsIgnoreCase(nama));
+        if (duplikat) {
+            labelSvcError.setText(
+                "Layanan \"" + nama + "\" sudah ada di katalog.");
+            return;
+        }
+
         Service svc = new Service();
         svc.setName(nama);
         svc.setDomain(domain);
