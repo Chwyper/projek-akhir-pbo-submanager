@@ -67,6 +67,15 @@
                            -fx-alignment: CENTER-LEFT;
                            -fx-background-radius: 8;
                            -fx-cursor: hand;"/>
+            <Button text="📜  Riwayat Koin"
+                    onAction="#showCoinHistory"
+                    prefWidth="Infinity" prefHeight="44"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #aaaacc;
+                           -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8;
+                           -fx-cursor: hand;"/>
 
             <!-- Spacer -->
             <Region VBox.vgrow="ALWAYS"/>

@@ -48,7 +48,7 @@
                            -fx-alignment: CENTER-LEFT;
                            -fx-background-radius: 8; -fx-cursor: hand;"/>
 
-            <Button text="Toko Koin"
+            <Button text="🪙  Toko Koin"
                     onAction="#showCoinStore"
                     prefWidth="Infinity" prefHeight="44"
                     style="-fx-background-color: transparent;
@@ -57,7 +57,7 @@
                            -fx-background-radius: 8; -fx-cursor: hand;"/>
 
             <!-- AKTIF -->
-            <Button text="Riwayat Koin"
+            <Button text="📜  Riwayat Koin"
                     prefWidth="Infinity" prefHeight="44"
                     style="-fx-background-color: #4f46e5;
                            -fx-text-fill: white; -fx-font-size: 13px;

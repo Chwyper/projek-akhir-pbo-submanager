@@ -54,6 +54,14 @@
                            -fx-alignment: CENTER-LEFT;
                            -fx-background-radius: 8; -fx-cursor: hand;"/>
 
+            <Button text="📜  Riwayat Koin"
+                    onAction="#showCoinHistory"
+                    prefWidth="Infinity" prefHeight="44"
+                    style="-fx-background-color: transparent;
+                           -fx-text-fill: #aaaacc; -fx-font-size: 13px;
+                           -fx-alignment: CENTER-LEFT;
+                           -fx-background-radius: 8; -fx-cursor: hand;"/>
+
             <Region VBox.vgrow="ALWAYS"/>
 
             <Label fx:id="userEmailLabel"
@@ -92,6 +100,18 @@
                                   -fx-text-fill: #666666;"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Tombol kecil ke Riwayat Koin -->
+                <Button text="📜 Lihat Riwayat"
+                        onAction="#showCoinHistory"
+                        style="-fx-background-color: transparent;
+                               -fx-border-color: #4f46e5;
+                               -fx-border-radius: 6;
+                               -fx-background-radius: 6;
+                               -fx-text-fill: #4f46e5;
+                               -fx-font-size: 12px;
+                               -fx-cursor: hand;
+                               -fx-padding: 6 12 6 12;"/>
 
                 <!-- Kartu saldo koin -->
                 <VBox spacing="4" alignment="CENTER_RIGHT"
