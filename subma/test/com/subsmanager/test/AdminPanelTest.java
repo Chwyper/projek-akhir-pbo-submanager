@@ -180,7 +180,7 @@ class AdminPanelTest extends TestBase {
                 .findFirst().orElse(null);
 
             if (btnHapus != null) {
-                interact(btnHapus::fire);
+                clickOn(btnHapus);
                 TestHelper.tungguFX();
                 
                 Button btnKonfirmasi = lookup(".button").queryAllAs(Button.class).stream()
@@ -188,12 +188,26 @@ class AdminPanelTest extends TestBase {
                     .findFirst().orElse(null);
                     
                 if (btnKonfirmasi != null) {
-                    interact(btnKonfirmasi::fire);
+                    clickOn(btnKonfirmasi);
                     TestHelper.tungguMs(1000);
                 }
             }
         } else {
             assertTrue(true);
         }
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("TC-AD-07: Admin Panel — Field tambah layanan kosong -> error muncul")
+    void adminPanel_tambahLayananKosongError() {
+        loginSebagaiAdminDanTunggu();
+        pindahTabBerdasarkanJudul("Katalog"); // Tab Katalog Subscription
+        
+        klikTombolAman("Tambah Layanan");
+        TestHelper.tungguFX();
+        
+        String errorLabel = TestHelper.getTeksLabel(this, "labelSvcError");
+        assertFalse(errorLabel.isBlank(), "Pesan error harus muncul saat field kosong");
     }
 }

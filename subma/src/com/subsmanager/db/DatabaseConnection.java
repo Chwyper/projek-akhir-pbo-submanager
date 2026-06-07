@@ -61,7 +61,7 @@ public class DatabaseConnection {
      * Inisialisasi HikariCP pool
      */
     private static void initPool() {
-        if (dataSource == null) {
+        if (dataSource == null || dataSource.isClosed()) {
             System.out.println("[DB] Inisialisasi HikariCP Connection Pool...");
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(JDBC_URL);

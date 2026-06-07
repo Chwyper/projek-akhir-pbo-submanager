@@ -253,4 +253,25 @@ class SubscriptionTest extends TestBase {
             "Tombol 'Hapus' seharusnya ter-render di dalam baris tabel"
         );
     }
+
+    /**
+     * TC-SB-08: Search keyword tidak cocok → tabel kosong.
+     */
+    @Test
+    @Order(8)
+    @DisplayName("TC-SB-08: Langganan Saya — search keyword tidak cocok -> tabel kosong")
+    void langganan_searchTidakCocokKosong() {
+        loginDanBukaLangganan();
+
+        clickOn("#searchField").write("xyz123random");
+        TestHelper.tungguFX();
+
+        @SuppressWarnings("unchecked")
+        javafx.scene.control.TableView<?> tabel = lookup("#subscriptionTable").queryAs(javafx.scene.control.TableView.class);
+        assertEquals(
+            0,
+            tabel.getItems().size(),
+            "Tabel seharusnya kosong saat keyword tidak cocok"
+        );
+    }
 }

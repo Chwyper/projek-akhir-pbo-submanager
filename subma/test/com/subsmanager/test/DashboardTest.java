@@ -121,4 +121,21 @@ class DashboardTest extends TestBase {
             + AppContext.USER_EMAIL + "', dapat: '" + email + "'"
         );
     }
+
+    /**
+     * TC-DB-05: Tabel subscription di dashboard ada baris data.
+     */
+    @Test @Order(5)
+    @DisplayName("TC-DB-05: Tabel subscription ada baris data")
+    void dashboard_tabelSubscriptionBerisiData() {
+        loginKeDashboard();
+
+        @SuppressWarnings("unchecked")
+        javafx.scene.control.TableView<?> tabel = lookup("#subscriptionTable").queryAs(javafx.scene.control.TableView.class);
+        
+        assertTrue(
+            tabel.getItems().size() > 0,
+            "Tabel langganan di dashboard seharusnya memiliki minimal 1 baris data"
+        );
+    }
 }

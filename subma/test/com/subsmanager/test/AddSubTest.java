@@ -198,4 +198,22 @@ class AddSubTest extends TestBase {
             "Peringatan tidak boleh kosong"
         );
     }
+
+    @Test
+    @Order(7)
+    @DisplayName("TC-AS-07: Tambah Langganan — Switch Predefined -> Custom -> form berubah")
+    void addsub_switchPredefinedKeCustomFormBerubah() {
+        loginDanBukaAddsub();
+
+        assertTrue(TestHelper.isVisible(this, "#serviceSearchField"), "Awalnya predefined");
+        
+        clickOn("#radioCustom");
+        TestHelper.tungguFX();
+        assertTrue(TestHelper.isVisible(this, "#customNamaField"), "Custom memunculkan field custom");
+        
+        clickOn("#radioPredefined");
+        TestHelper.tungguFX();
+        assertTrue(TestHelper.isVisible(this, "#serviceSearchField"), "Kembali ke predefined munculkan search");
+        assertFalse(TestHelper.isVisible(this, "#customNamaBox"), "Kembali ke predefined menyembunyikan custom field");
+    }
 }

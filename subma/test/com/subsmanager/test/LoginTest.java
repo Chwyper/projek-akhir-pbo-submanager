@@ -245,4 +245,26 @@ class LoginTest extends TestBase {
             )
         );
     }
+
+    /**
+     * TC-AU-09: Link "Sudah punya akun?" dari register ke login berfungsi.
+     */
+    @Test @Order(9)
+    @DisplayName("TC-AU-09: Link \"Sudah punya akun?\" dari register ke login")
+    void register_linkSudahPunyaAkunKeLogin() {
+        clickOn("Belum punya akun? Daftar");
+        TestHelper.tungguNode(this, "#confirmPasswordField");
+        
+        clickOn("Sudah punya akun? Login");
+        TestHelper.tungguNode(this, "#emailField");
+        
+        assertTrue(
+            TestHelper.isHalamanAktif(this, "#emailField"),
+            "Seharusnya kembali ke halaman login"
+        );
+        assertFalse(
+            TestHelper.isHalamanAktif(this, "#confirmPasswordField"),
+            "Seharusnya form register tertutup"
+        );
+    }
 }

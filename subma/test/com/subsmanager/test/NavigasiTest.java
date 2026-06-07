@@ -77,4 +77,24 @@ class NavigasiTest extends TestBase {
         TestHelper.tungguNode(this, "#historyTable", AppContext.TIMEOUT_DEFAULT);
         assertTrue(TestHelper.isHalamanAktif(this, "#historyTable"), "Gagal navigasi ke Riwayat Koin");
     }
+
+    @Test
+    @Order(6)
+    @DisplayName("TC-NV-06: Navigasi — Logout dari sidebar kembali ke login")
+    void navigasi_logoutKembaliKeLogin() {
+        loginDanTungguDashboard();
+        
+        // Klik menggunakan substring karena mungkin ada emoji
+        javafx.scene.control.Button btnLogout = lookup(".button").queryAllAs(javafx.scene.control.Button.class)
+            .stream().filter(b -> b.getText() != null && b.getText().contains("Logout"))
+            .findFirst().orElse(null);
+            
+        if (btnLogout != null) {
+            interact(btnLogout::fire);
+            TestHelper.tungguNode(this, "#emailField", AppContext.TIMEOUT_DEFAULT);
+            assertTrue(TestHelper.isHalamanAktif(this, "#emailField"), "Gagal navigasi ke Login setelah logout");
+        } else {
+            fail("Tombol Logout tidak ditemukan di sidebar");
+        }
+    }
 }

@@ -139,4 +139,20 @@ class FinancialTest extends TestBase {
             "Tombol 'Export Excel' seharusnya di-render di halaman Keuangan"
         );
     }
+
+    /**
+     * TC-FN-06: avgLabel terisi dan tidak kosong.
+     */
+    @Test
+    @Order(6)
+    @DisplayName("TC-FN-06: Keuangan — avgLabel terisi dan tidak kosong")
+    void keuangan_avgLabelTerisiDanTidakKosong() {
+        loginDanBukaKeuangan();
+
+        String avg = TestHelper.getTeksLabel(this, "avgLabel");
+        assertFalse(
+            avg.isBlank(),
+            "avgLabel seharusnya terisi dengan rata-rata biaya bulanan"
+        );
+    }
 }

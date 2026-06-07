@@ -173,4 +173,20 @@ class CoinHistoryTest extends TestBase {
         assertTrue(adaStatus, "Kolom 'Status' tidak ditemukan di TableView");
         assertTrue(adaAksi, "Kolom 'Aksi' tidak ditemukan di TableView");
     }
+
+    /**
+     * TC-RK-07: totalTransaksiLabel tidak kosong.
+     */
+    @Test
+    @Order(7)
+    @DisplayName("TC-RK-07: Riwayat Koin — totalTransaksiLabel tidak kosong")
+    void riwayatKoin_totalTransaksiLabelTidakKosong() {
+        loginDanBukaRiwayatKoin();
+
+        String total = TestHelper.getTeksLabel(this, "totalTransaksiLabel");
+        assertFalse(
+            total.isBlank(),
+            "totalTransaksiLabel seharusnya terisi dengan ringkasan transaksi"
+        );
+    }
 }

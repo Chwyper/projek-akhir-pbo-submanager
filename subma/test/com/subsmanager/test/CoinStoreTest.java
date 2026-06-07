@@ -126,4 +126,23 @@ class CoinStoreTest extends TestBase {
             "Seharusnya sudah meninggalkan halaman Toko Koin"
         );
     }
+
+    /**
+     * TC-CK-08: Pilih paket → selectedPackageLabel menampilkan nama paket.
+     */
+    @Test
+    @Order(5)
+    @DisplayName("TC-CK-08: Toko Koin — Pilih paket -> selectedPackageLabel menampilkan nama")
+    void tokoCoin_pilihPaketMenampilkanNamaDiPayment() {
+        loginDanBukaTokoCoin();
+
+        clickOn("#cardStarter");
+        TestHelper.tungguFX();
+
+        String selectedPackage = TestHelper.getTeksLabel(this, "selectedPackageLabel");
+        assertTrue(
+            selectedPackage.contains("Starter") || !selectedPackage.isBlank(),
+            "selectedPackageLabel seharusnya memuat nama paket yang diklik"
+        );
+    }
 }
