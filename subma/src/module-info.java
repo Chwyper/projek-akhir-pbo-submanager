@@ -5,6 +5,7 @@ module subma {
     requires java.desktop;
     requires java.sql;
     
+    
     requires org.apache.pdfbox;
     requires org.apache.pdfbox.io;
     requires org.apache.fontbox;
@@ -16,11 +17,17 @@ module subma {
     requires org.apache.commons.compress;
     requires org.apache.commons.collections4;
     requires org.apache.xmlbeans;
+    requires org.testfx;
+    requires org.testfx.junit5;
+    requires org.junit.jupiter.api;
     requires com.github.virtuald.curvesapi;
     requires commons.math3;
+    requires com.zaxxer.hikari;
+    requires org.slf4j;
+    requires org.slf4j.simple;
 
     opens com.subsmanager to javafx.fxml, javafx.graphics;
-    opens com.subsmanager.gui.controller to javafx.fxml;
+    opens com.subsmanager.gui.controller to javafx.fxml, org.testfx;
     opens com.subsmanager.subscription.model to javafx.base;
     opens com.subsmanager.auth to javafx.base;
     opens com.subsmanager.catalog to javafx.base;

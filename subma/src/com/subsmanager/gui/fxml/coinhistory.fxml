@@ -195,6 +195,10 @@
                         <TableColumn fx:id="colStatus"
                                      text="Status"
                                      prefWidth="90"/>
+                        <TableColumn fx:id="colAksi"
+                                     text="Aksi"
+                                     prefWidth="80"
+                                     sortable="false"/>
                     </columns>
                     <placeholder>
                         <Label text="Belum ada transaksi."

@@ -67,7 +67,8 @@ public class SessionManager {
 
     public static void setCurrentUser(User user) {
         currentUser = user;
-        System.out.println("[SessionManager] Login: " + user.getEmail());
+        System.out.println("[SessionManager] Login: "
+            + (user != null ? user.getEmail() : "(cleared)"));
     }
 
     public static User getCurrentUser() {

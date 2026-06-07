@@ -1,8 +1,9 @@
 package com.subsmanager.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * DatabaseConnection - Singleton koneksi JDBC ke Supabase PostgreSQL.
@@ -13,72 +14,101 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
 
-    // Session Pooler — aws-1-ap-southeast-1
-    private static final String HOST =
-        "aws-1-ap-southeast-1.pooler.supabase.com";
-    private static final String PORT  = "5432";
-    private static final String DB    = "postgres";
-    private static final String USER  = "postgres.gcjjtyexaastjijfckyh"; 
-    private static final String PASS  = "K8%gF?EgPZRsExv";
+    private static final String HOST;
+    private static final String PORT;
+    private static final String DB;
+    private static final String USER;
+    private static final String PASS;
+    private static final String JDBC_URL;
 
-    private static final String JDBC_URL =
-        "jdbc:postgresql://" + HOST + ":" + PORT
-        + "/" + DB
-        + "?sslmode=require"
-        + "&connectTimeout=10"
-        + "&socketTimeout=30"
-        + "&ApplicationName=SubsManager";
+    static {
+        java.util.Properties props = new java.util.Properties();
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(".env"))) {
+            props.load(reader);
+        } catch (java.io.IOException e) {
+            System.err.println("[DB] Warning: File .env tidak ditemukan. Mencoba System Environment Variable.");
+        }
 
-    /** Singleton instance koneksi */
-    private static Connection instance;
+        HOST = getEnvOrProp("DB_HOST", props, "localhost");
+        PORT = getEnvOrProp("DB_PORT", props, "5432");
+        DB   = getEnvOrProp("DB_NAME", props, "postgres");
+        USER = getEnvOrProp("DB_USER", props, "postgres");
+        PASS = getEnvOrProp("DB_PASS", props, "");
+
+        JDBC_URL = "jdbc:postgresql://" + HOST + ":" + PORT
+            + "/" + DB
+            + "?sslmode=require"
+            + "&connectTimeout=10"
+            + "&socketTimeout=30"
+            + "&ApplicationName=SubsManager";
+    }
+
+    private static String getEnvOrProp(String key, java.util.Properties props, String defaultValue) {
+        String envValue = System.getenv(key);
+        if (envValue != null && !envValue.isEmpty()) {
+            return envValue;
+        }
+        return props.getProperty(key, defaultValue);
+    }
+
+    /** HikariCP DataSource instance */
+    private static HikariDataSource dataSource;
 
     /** Private constructor — tidak boleh di-instantiate */
     private DatabaseConnection() {}
 
     /**
-     * Ambil koneksi singleton.
-     * Buat koneksi baru jika belum ada, sudah tertutup, atau tidak valid.
+     * Inisialisasi HikariCP pool
+     */
+    private static void initPool() {
+        if (dataSource == null || dataSource.isClosed()) {
+            System.out.println("[DB] Inisialisasi HikariCP Connection Pool...");
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(JDBC_URL);
+            config.setUsername(USER);
+            config.setPassword(PASS);
+            
+            // Optimasi Pool untuk aplikasi desktop
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setConnectionTimeout(10000); // 10 detik timeout
+            config.setIdleTimeout(600000); // 10 menit idle timeout
+            config.setMaxLifetime(1800000); // 30 menit usia maksimal
+            
+            dataSource = new HikariDataSource(config);
+            System.out.println("[DB] HikariCP Pool berhasil dibuat.");
+        }
+    }
+
+    /**
+     * Ambil koneksi dari pool.
      *
      * @return Connection ke Supabase PostgreSQL
      * @throws SQLException jika koneksi gagal
      */
     public static Connection getConnection() throws SQLException {
-        if (instance == null || instance.isClosed()
-                || !instance.isValid(3)) {
-            System.out.println("[DB] Membuka koneksi ke Supabase (Session Pooler)...");
-            instance = DriverManager.getConnection(JDBC_URL, USER, PASS);
-            System.out.println("[DB] Koneksi berhasil.");
+        if (dataSource == null || dataSource.isClosed()) {
+            initPool();
         }
-        return instance;
+        return dataSource.getConnection();
     }
 
     /**
-     * Tutup koneksi saat logout atau aplikasi ditutup.
+     * Tutup seluruh kolam koneksi saat logout atau aplikasi ditutup.
      */
     public static void closeConnection() {
-        try {
-            if (instance != null && !instance.isClosed()) {
-                instance.close();
-                System.out.println("[DB] Koneksi ditutup.");
-            }
-        } catch (SQLException e) {
-            System.err.println("[DB] Gagal menutup koneksi: "
-                + e.getMessage());
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
+            System.out.println("[DB] HikariCP Connection Pool ditutup.");
         }
     }
 
     /**
-     * Cek apakah koneksi aktif — untuk debugging.
+     * Cek apakah koneksi pool aktif — untuk debugging.
      *
      * @return true jika terhubung
      */
     public static boolean isConnected() {
-        try {
-            return instance != null
-                && !instance.isClosed()
-                && instance.isValid(2);
-        } catch (SQLException e) {
-            return false;
-        }
+        return dataSource != null && !dataSource.isClosed() && dataSource.isRunning();
     }
 }

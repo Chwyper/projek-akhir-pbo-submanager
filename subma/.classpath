@@ -6,6 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="lib" path="D:/software/Java/openjfx-21.0.10_windows-x64_bin-sdk/javafx-sdk-21.0.10/lib/javafx.base.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -137,6 +138,71 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/postgresql-42.7.10.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/junit-jupiter-api-5.10.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/junit-jupiter-engine-5.10.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/junit-platform-commons-1.10.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/junit-platform-engine-1.10.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/openjfx-monocle-jdk-12.0.1+2.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/testfx-core-4.0.18.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/testfx-junit5-4.0.18.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/hamcrest-2.2.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/opentest4j-1.3.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/test/junit-platform-launcher-1.10.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/HikariCP-5.1.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/slf4j-api-2.0.13.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/slf4j-simple-2.0.13.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
