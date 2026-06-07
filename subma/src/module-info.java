@@ -22,6 +22,9 @@ module subma {
     requires org.junit.jupiter.api;
     requires com.github.virtuald.curvesapi;
     requires commons.math3;
+    requires com.zaxxer.hikari;
+    requires org.slf4j;
+    requires org.slf4j.simple;
 
     opens com.subsmanager to javafx.fxml, javafx.graphics;
     opens com.subsmanager.gui.controller to javafx.fxml, org.testfx;

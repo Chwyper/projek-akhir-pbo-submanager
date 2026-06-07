@@ -1,8 +1,9 @@
 package com.subsmanager.db;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * DatabaseConnection - Singleton koneksi JDBC ke Supabase PostgreSQL.
@@ -50,56 +51,64 @@ public class DatabaseConnection {
         return props.getProperty(key, defaultValue);
     }
 
-    /** Singleton instance koneksi */
-    private static Connection instance;
+    /** HikariCP DataSource instance */
+    private static HikariDataSource dataSource;
 
     /** Private constructor — tidak boleh di-instantiate */
     private DatabaseConnection() {}
 
     /**
-     * Ambil koneksi singleton.
-     * Buat koneksi baru jika belum ada, sudah tertutup, atau tidak valid.
+     * Inisialisasi HikariCP pool
+     */
+    private static void initPool() {
+        if (dataSource == null) {
+            System.out.println("[DB] Inisialisasi HikariCP Connection Pool...");
+            HikariConfig config = new HikariConfig();
+            config.setJdbcUrl(JDBC_URL);
+            config.setUsername(USER);
+            config.setPassword(PASS);
+            
+            // Optimasi Pool untuk aplikasi desktop
+            config.setMaximumPoolSize(10);
+            config.setMinimumIdle(2);
+            config.setConnectionTimeout(10000); // 10 detik timeout
+            config.setIdleTimeout(600000); // 10 menit idle timeout
+            config.setMaxLifetime(1800000); // 30 menit usia maksimal
+            
+            dataSource = new HikariDataSource(config);
+            System.out.println("[DB] HikariCP Pool berhasil dibuat.");
+        }
+    }
+
+    /**
+     * Ambil koneksi dari pool.
      *
      * @return Connection ke Supabase PostgreSQL
      * @throws SQLException jika koneksi gagal
      */
     public static Connection getConnection() throws SQLException {
-        if (instance == null || instance.isClosed()
-                || !instance.isValid(3)) {
-            System.out.println("[DB] Membuka koneksi ke Supabase (Session Pooler)...");
-            instance = DriverManager.getConnection(JDBC_URL, USER, PASS);
-            System.out.println("[DB] Koneksi berhasil.");
+        if (dataSource == null || dataSource.isClosed()) {
+            initPool();
         }
-        return instance;
+        return dataSource.getConnection();
     }
 
     /**
-     * Tutup koneksi saat logout atau aplikasi ditutup.
+     * Tutup seluruh kolam koneksi saat logout atau aplikasi ditutup.
      */
     public static void closeConnection() {
-        try {
-            if (instance != null && !instance.isClosed()) {
-                instance.close();
-                System.out.println("[DB] Koneksi ditutup.");
-            }
-        } catch (SQLException e) {
-            System.err.println("[DB] Gagal menutup koneksi: "
-                + e.getMessage());
+        if (dataSource != null && !dataSource.isClosed()) {
+            dataSource.close();
+            System.out.println("[DB] HikariCP Connection Pool ditutup.");
         }
     }
 
     /**
-     * Cek apakah koneksi aktif — untuk debugging.
+     * Cek apakah koneksi pool aktif — untuk debugging.
      *
      * @return true jika terhubung
      */
     public static boolean isConnected() {
-        try {
-            return instance != null
-                && !instance.isClosed()
-                && instance.isValid(2);
-        } catch (SQLException e) {
-            return false;
-        }
+        return dataSource != null && !dataSource.isClosed() && dataSource.isRunning();
     }
 }

@@ -192,5 +192,20 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/HikariCP-5.1.0.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/slf4j-api-2.0.13.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/Kuliah/Semester 4/PBO/Kuliah/Tugas besar/Depedensi/slf4j-simple-2.0.13.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
