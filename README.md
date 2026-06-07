@@ -1,185 +1,137 @@
-# SubManager — Subscription Manager
+<div align="center">
+  <h1 align="center">SubManager — Subscription Manager</h1>
+  <p align="center">
+    Aplikasi desktop manajemen langganan (subscription) berbasis Java 21 dan JavaFX.
+    <br />
+    <a href="#-fitur-utama"><strong>Jelajahi Fitur »</strong></a>
+    <br />
+    <br />
+    <a href="#-cara-menjalankan-getting-started">Mulai Menjalankan</a>
+    ·
+    <a href="#-struktur-proyek">Lihat Struktur</a>
+  </p>
+</div>
 
-Aplikasi manajemen langganan (*subscription*) berbasis desktop yang dibangun dengan **Java 21** dan **JavaFX 21**. Proyek ini merupakan tugas akhir mata kuliah **Pemrograman Berorientasi Objek (PBO)** yang mendemonstrasikan penerapan konsep-konsep OOP secara menyeluruh.
+<!-- BADGES -->
+<div align="center">
+  <img alt="Java" src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=java&logoColor=white" />
+  <img alt="JavaFX" src="https://img.shields.io/badge/JavaFX-21-FF8000?style=for-the-badge&logo=java&logoColor=white" />
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-Supabase-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+</div>
+
+<br />
+
+## 📖 Tentang Proyek
+
+**SubManager** adalah aplikasi manajemen langganan (*subscription*) berbasis desktop yang dirancang untuk memudahkan pengguna dalam melacak, mengelola, dan memproyeksikan biaya langganan bulanan maupun tahunan. 
+
+Proyek ini dikembangkan sebagai **Tugas Akhir mata kuliah Pemrograman Berorientasi Objek (PBO)** di ITENAS Bandung. Fokus utama dari proyek ini adalah mendemonstrasikan penerapan konsep-konsep *Object-Oriented Programming* (OOP) secara mendalam dalam arsitektur perangkat lunak yang utuh.
 
 ---
 
-## Fitur Utama
+## ✨ Fitur Utama
 
-| Fitur | Keterangan |
+- 🔐 **Sistem Autentikasi**: Login dan Register dengan pembagian peran (User & Admin).
+- 📊 **Dashboard Terpusat**: Visualisasi ringkasan langganan, biaya bulanan/tahunan, dan saldo koin secara intuitif.
+- 📦 **Manajemen Langganan**: Kemudahan menambah langganan dari katalog (*Predefined*) atau membuat entri kustom (*Custom*).
+- 💰 **Ringkasan Keuangan**: Kalkulasi matematis untuk pengeluaran bulanan dan proyeksi biaya tahunan.
+- 💱 **Konversi Mata Uang Real-time**: Integrasi Frankfurter API untuk konversi kurs USD → IDR secara *real-time*.
+- 🪙 **Sistem Koin & Pembayaran**: Simulasi *top-up* koin untuk fitur premium. (Menyediakan paket Starter, Regular, dan Pro via GoPay, DANA, OVO, dll).
+- 📄 **Export PDF & Excel**: Pembuatan laporan finansial dan data langganan menggunakan *Apache PDFBox* & *Apache POI*.
+- 🛠️ **Admin Panel**: Dasbor khusus admin untuk manajemen katalog layanan, pemantauan transaksi, dan kelola pengguna.
+
+---
+
+## 🛠️ Teknologi yang Digunakan
+
+Proyek ini dibangun menggunakan berbagai teknologi dan *library* modern:
+
+| Komponen | Teknologi / Versi |
 |---|---|
-| **Autentikasi** | Login & Register akun pengguna |
-| **Dashboard** | Ringkasan total langganan, biaya bulanan/tahunan, dan saldo koin |
-| **Manajemen Langganan** | Tambah, lihat, dan hapus langganan (*predefined* & *custom*) |
-| **Ringkasan Keuangan** | Kalkulasi pengeluaran bulanan dan proyeksi tahunan |
-| **Konversi Mata Uang** | Kurs USD → IDR real-time via Frankfurter API (refresh 24 jam) |
-| **Sistem Koin** | Beli koin, gunakan untuk fitur premium (Export PDF, Reminder) |
-| **Export PDF & Excel** | Ekspor data langganan menggunakan Apache PDFBox & Apache POI |
+| **Core Language** | [Java 21](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) |
+| **GUI Framework** | [JavaFX 21.0.10](https://gluonhq.com/products/javafx/) |
+| **Database** | PostgreSQL (di-host via [Supabase](https://supabase.com/)) |
+| **Connection Pooling**| [HikariCP 5.1.0](https://github.com/brettwooldridge/HikariCP) |
+| **JDBC Driver** | PostgreSQL JDBC 42.7.10 |
+| **Testing** | JUnit 5 & TestFX 4.0.18 |
+| **PDF Generation** | Apache PDFBox 3.0.7 |
+| **Excel Generation**| Apache POI 5.5.1 |
+| **Logging** | Log4j 2.24.3 & SLF4J |
 
 ---
 
-## Konsep OOP yang Diterapkan
+## 🧠 Penerapan Konsep OOP
 
-1. **Inheritance** — `Admin extends User`
-2. **Komposisi** — `Service` memiliki daftar `ServiceTier`
-3. **Polymorphism** — `getCancelPageURL()` dan `getIconUrl()` di-override oleh `PredefinedSubscription` dan `CustomSubscription`
-4. **Agregasi** — `User` memiliki daftar `Subscription` dan `CoinBalance`
-5. **Dependency** — `SubscriptionManager` bergantung pada `OverlayController`; `CoinService` bergantung pada `PaymentProcessor`
-6. **Abstract Class** — `Subscription` sebagai *abstract base class*
-7. **Singleton** — `DatabaseConnection` (koneksi JDBC ke Supabase)
-8. **DAO Pattern** — `UserDAO`, `SubscriptionDAO`, `CoinDAO`
+SubManager dirancang secara hati-hati untuk memenuhi kaidah *Object-Oriented Programming*:
 
----
-
-## Tech Stack
-
-| Komponen | Versi |
-|---|---|
-| Java | 21 |
-| JavaFX | 21.0.10 |
-| PostgreSQL JDBC | 42.7.10 |
-| Database (cloud) | Supabase PostgreSQL |
-| Apache PDFBox | 3.0.7 |
-| Apache POI | 5.5.1 |
-| Log4j | 2.24.3 |
-| IDE | Eclipse |
+1. **Inheritance** — Kelas `Admin` mewarisi dari kelas `User`.
+2. **Polymorphism** — Metode *override* seperti `getCancelPageURL()` untuk berbagai tipe langganan.
+3. **Encapsulation** — Perlindungan akses data melalui *modifier* `private` dengan metode *getter* dan *setter*.
+4. **Abstraction** — Penggunaan kelas abstrak `Subscription` sebagai fondasi dasar model.
+5. **Composition & Aggregation** — Relasi *Has-A* (contoh: `User` memiliki daftar `Subscription` dan `CoinBalance`).
+6. **Design Patterns**:
+   - **Singleton**: Digunakan pada `DatabaseConnection` untuk memastikan hanya ada satu *connection pool*.
+   - **DAO (Data Access Object)**: Pemisahan logika akses basis data (`UserDAO`, `SubscriptionDAO`, dll).
 
 ---
 
-## Struktur Paket
+## 🚀 Cara Menjalankan (Getting Started)
 
-```
-subma/src/com/subsmanager/
-├── Main.java                  # Entry point (mode GUI / mode demo)
-├── MainApp.java               # JavaFX Application entry point
-├── SessionManager.java        # State global: stage & user aktif
-│
-├── auth/                      # Autentikasi pengguna
-│   ├── User.java
-│   └── Admin.java
-│
-├── catalog/                   # Katalog layanan
-│   ├── Service.java
-│   └── ServiceTier.java
-│
-├── coin/                      # Sistem koin & pembayaran
-│   ├── CoinBalance.java
-│   ├── CoinPackage.java
-│   ├── CoinService.java
-│   ├── CoinTransaction.java
-│   ├── PaymentMethod.java     # Enum: GOPAY, OVO, DANA, dll.
-│   ├── PaymentProcessor.java
-│   ├── TransactionStatus.java
-│   └── TransactionType.java
-│
-├── currency/                  # Konversi mata uang
-│   └── CurrencyConverter.java # Frankfurter API
-│
-├── db/                        # Data Access Layer
-│   ├── DatabaseConnection.java
-│   ├── UserDAO.java
-│   ├── SubscriptionDAO.java
-│   └── CoinDAO.java
-│
-├── financial/                 # Ringkasan keuangan
-│   └── FinancialSummary.java
-│
-├── gui/                       # Antarmuka pengguna (JavaFX)
-│   ├── controller/
-│   │   ├── LoginController.java
-│   │   ├── RegisterController.java
-│   │   ├── DashboardController.java
-│   │   ├── SubscriptionController.java
-│   │   ├── AddSubController.java
-│   │   ├── FinancialController.java
-│   │   ├── CoinStoreController.java
-│   │   ├── CoinHistoryController.java
-│   │   └── ExportService.java
-│   └── fxml/
-│       ├── login.fxml
-│       ├── register.fxml
-│       ├── dashboard.fxml
-│       ├── subscription.fxml
-│       ├── addsub.fxml
-│       ├── financial.fxml
-│       ├── coinstore.fxml
-│       └── coinhistory.fxml
-│
-├── manager/                   # Logika pengelolaan langganan
-│   └── SubscriptionManager.java
-│
-├── overlay/                   # Overlay navigasi
-│   └── OverlayController.java
-│
-└── subscription/              # Model langganan
-    └── model/
-        ├── Subscription.java          # Abstract base class
-        ├── PredefinedSubscription.java
-        ├── CustomSubscription.java
-        └── BillingCycle.java          # Enum: MONTHLY, YEARLY
-```
+### Prasyarat Instalasi
+- **Java 21 (JDK)**
+- **JavaFX SDK 21.0.10**
+- IDE Java (direkomendasikan: **Eclipse IDE**)
 
----
-
-## Cara Menjalankan
-
-### Prasyarat
-- **Java 21** (JDK)
-- **JavaFX SDK 21.0.10** — unduh dari [gluonhq.com](https://gluonhq.com/products/javafx/)
-- **Eclipse IDE** (disarankan) atau IDE lain yang mendukung JavaFX module
-
-### Konfigurasi Eclipse
-1. Clone repositori ini.
-2. Import sebagai *Existing Java Project* dari folder `subma/`.
-3. Perbarui path *classpath* di `.classpath` agar mengarah ke lokasi JavaFX SDK di komputer Anda.
-4. Tambahkan VM arguments berikut pada *Run Configuration*:
+### Langkah Instalasi (Eclipse)
+1. Kloning repositori ini ke komputer lokal Anda:
+   ```sh
+   git clone https://github.com/Chwyper/projek-akhir-pbo-submanager.git
    ```
+2. Buka Eclipse dan lakukan *Import* -> **Existing Projects into Workspace**. Arahkan ke folder `subma/`.
+3. Buat file bernama `.env` di dalam root project (sejajar dengan `src/`) menggunakan format dari `.env.example`, dan isi kredensial *database* Anda.
+4. Pastikan *build path* (`.classpath`) sudah sesuai atau arahkan kembali ke lokasi file `.jar` JavaFX SDK di komputer Anda. Seluruh dependensi pihak ketiga (*library*) telah dilampirkan secara *offline* di folder `Depedensi/`.
+5. Tambahkan Argumen VM (VM Arguments) pada **Run Configuration** di Eclipse:
+   ```sh
    --module-path /path/to/javafx-sdk-21.0.10/lib --add-modules javafx.controls,javafx.fxml
    ```
-5. Jalankan `Main.java` sebagai Java Application.
+6. Jalankan kelas `Main.java` sebagai *Java Application*.
 
-### Mode Aplikasi
+---
 
-`Main.java` memiliki flag yang dapat diubah:
+## 📂 Struktur Proyek
 
-```java
-// GUI mode (default) — jalankan antarmuka JavaFX
-private static final boolean LAUNCH_GUI = true;
+Berikut adalah gambaran arsitektur tingkat tinggi dari direktori *source code* (kode sumber):
 
-// Demo mode — jalankan demo console OOP
-private static final boolean LAUNCH_GUI = false;
+```text
+subma/src/com/subsmanager/
+├── auth/           # Model autentikasi (User, Admin)
+├── catalog/        # Katalog layanan (Service, Tier)
+├── coin/           # Sistem mata uang & Payment Gateway
+├── currency/       # API Konversi kurs
+├── db/             # Data Access Object (DAO) & Koneksi DB (HikariCP)
+├── financial/      # Pemroses kalkulasi ringkasan
+├── gui/            # JavaFX Controller & File FXML
+├── manager/        # Logika aplikasi dan state management
+├── overlay/        # Transisi antar-antarmuka
+└── subscription/   # Model langganan abstrak dan konkret
 ```
 
 ---
 
-## Paket Koin
+## 🧪 Pengujian (Testing)
 
-| Paket | Jumlah Koin | Harga |
-|---|---|---|
-| Starter | 50 koin | Rp 10.000 |
-| Regular | 150 koin | Rp 25.000 |
-| Pro | 350 koin | Rp 50.000 |
+Aplikasi ini dilengkapi dengan **60 Test Cases** yang komprehensif, dibangun menggunakan **JUnit 5** dan **TestFX** untuk pengujian otomatis antarmuka pengguna (UI).
+Cakupan pengujian meliputi proses Autentikasi, Manajemen Langganan, Simulasi Transaksi Koin, Fungsi Ekspor, dan Panel Admin.
 
-Koin digunakan untuk mengakses fitur premium seperti **Export PDF** dan **Reminder Langganan**.
+Untuk menjalankan pengujian di Eclipse:
+- Klik kanan folder `test/` di *Project Explorer* -> Pilih `Run As` -> `JUnit Test`.
 
 ---
 
-## Metode Pembayaran
+## 📄 Lisensi
 
-- GoPay
-- OVO
-- DANA
-- Transfer Bank
-- Kartu Kredit
+Dikembangkan secara eksklusif untuk keperluan akademik — **Tugas Akhir PBO Semester 4**.
 
----
-
-## Koneksi Database
-
-Aplikasi terhubung ke **Supabase PostgreSQL** menggunakan JDBC melalui *Session Pooler* (region `aws-1-ap-southeast-1`). Koneksi dikelola sebagai **Singleton** oleh `DatabaseConnection.java` dan ditutup otomatis saat pengguna logout.
-
----
-
-## Lisensi
-
-Proyek ini dibuat untuk keperluan akademik — **Tugas Akhir PBO Semester 4**.
+<div align="center">
+  <i>Dibuat dengan ❤️ oleh Mahasiswa ITENAS</i>
+</div>
