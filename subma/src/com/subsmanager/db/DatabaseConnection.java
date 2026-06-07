@@ -13,21 +13,42 @@ import java.sql.SQLException;
  */
 public class DatabaseConnection {
 
-    // Session Pooler — aws-1-ap-southeast-1
-    private static final String HOST =
-        "aws-1-ap-southeast-1.pooler.supabase.com";
-    private static final String PORT  = "5432";
-    private static final String DB    = "postgres";
-    private static final String USER  = "postgres.gcjjtyexaastjijfckyh"; 
-    private static final String PASS  = "K8%gF?EgPZRsExv";
+    private static final String HOST;
+    private static final String PORT;
+    private static final String DB;
+    private static final String USER;
+    private static final String PASS;
+    private static final String JDBC_URL;
 
-    private static final String JDBC_URL =
-        "jdbc:postgresql://" + HOST + ":" + PORT
-        + "/" + DB
-        + "?sslmode=require"
-        + "&connectTimeout=10"
-        + "&socketTimeout=30"
-        + "&ApplicationName=SubsManager";
+    static {
+        java.util.Properties props = new java.util.Properties();
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(".env"))) {
+            props.load(reader);
+        } catch (java.io.IOException e) {
+            System.err.println("[DB] Warning: File .env tidak ditemukan. Mencoba System Environment Variable.");
+        }
+
+        HOST = getEnvOrProp("DB_HOST", props, "localhost");
+        PORT = getEnvOrProp("DB_PORT", props, "5432");
+        DB   = getEnvOrProp("DB_NAME", props, "postgres");
+        USER = getEnvOrProp("DB_USER", props, "postgres");
+        PASS = getEnvOrProp("DB_PASS", props, "");
+
+        JDBC_URL = "jdbc:postgresql://" + HOST + ":" + PORT
+            + "/" + DB
+            + "?sslmode=require"
+            + "&connectTimeout=10"
+            + "&socketTimeout=30"
+            + "&ApplicationName=SubsManager";
+    }
+
+    private static String getEnvOrProp(String key, java.util.Properties props, String defaultValue) {
+        String envValue = System.getenv(key);
+        if (envValue != null && !envValue.isEmpty()) {
+            return envValue;
+        }
+        return props.getProperty(key, defaultValue);
+    }
 
     /** Singleton instance koneksi */
     private static Connection instance;
