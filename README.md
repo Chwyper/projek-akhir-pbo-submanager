@@ -128,10 +128,4 @@ Untuk menjalankan pengujian di Eclipse:
 
 ---
 
-## 📄 Lisensi
 
-Dikembangkan secara eksklusif untuk keperluan akademik — **Tugas Akhir PBO Semester 4**.
-
-<div align="center">
-  <i>Dibuat dengan ❤️ oleh Mahasiswa ITENAS</i>
-</div>
