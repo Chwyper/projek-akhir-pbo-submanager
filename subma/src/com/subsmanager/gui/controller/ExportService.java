@@ -4,6 +4,7 @@ import com.subsmanager.auth.User;
 import com.subsmanager.currency.CurrencyConverter;
 import com.subsmanager.subscription.model.Subscription;
 import com.subsmanager.coin.CoinTransaction;
+import com.subsmanager.db.CoinDAO.TransactionRecord;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -464,6 +465,107 @@ public class ExportService {
         doc.close();
 
         System.out.println("[ExportService] Struk berhasil: "
+            + outputPath);
+    }
+
+    /**
+     * Export bukti transaksi top up dari data riwayat (TransactionRecord).
+     * Dipakai dari halaman Riwayat Koin — tidak butuh CoinTransaction penuh.
+     *
+     * @param rec        data transaksi dari tabel riwayat
+     * @param user       user pemilik transaksi
+     * @param outputPath path file output PDF
+     */
+    public void exportReceiptFromRecord(TransactionRecord rec,
+                                        User user,
+                                        String outputPath) throws Exception {
+
+        PDDocument doc = new PDDocument();
+
+        // Ukuran struk: lebar 226pt (~8cm), tinggi 400pt
+        PDRectangle receiptSize = new PDRectangle(226, 400);
+        PDPage page = new PDPage(receiptSize);
+        doc.addPage(page);
+
+        PDPageContentStream cs =
+            new PDPageContentStream(doc, page);
+
+        float margin = 14;
+        float width  = receiptSize.getWidth();
+        float y      = 380;
+        float lh     = 16;
+
+        PDType1Font fontBold =
+            new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+        PDType1Font fontReg  =
+            new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+        PDType1Font fontMono =
+            new PDType1Font(Standard14Fonts.FontName.COURIER);
+
+        // ── Judul ────────────────────────────────────
+        cs.setFont(fontBold, 11);
+        drawCentered(cs, "SUBSCRIPTION MANAGER", width, y);
+        y -= lh;
+        cs.setFont(fontReg, 9);
+        drawCentered(cs, "Bukti Pembelian Koin", width, y);
+        y -= lh * 1.2f;
+
+        // ── Garis ────────────────────────────────────
+        drawLine(cs, margin, width - margin, y);
+        y -= lh;
+
+        // ── Info Transaksi ───────────────────────────
+        cs.setFont(fontReg, 8);
+        drawRow(cs, "Kode", rec.getKode(),
+            margin, y, width); y -= lh;
+        drawRow(cs, "Tanggal", rec.getTanggal(),
+            margin, y, width); y -= lh;
+        drawRow(cs, "Akun", truncate(user.getEmail(), 24),
+            margin, y, width); y -= lh;
+        y -= lh * 0.3f;
+
+        // ── Garis ────────────────────────────────────
+        drawLine(cs, margin, width - margin, y);
+        y -= lh;
+
+        // ── Detail Pembelian ─────────────────────────
+        cs.setFont(fontBold, 8);
+        drawRow(cs, "Paket", rec.getDeskripsi(),
+            margin, y, width); y -= lh;
+
+        cs.setFont(fontReg, 8);
+        drawRow(cs, "Jumlah Koin",
+            rec.getJumlahKoin() + " koin",
+            margin, y, width); y -= lh;
+        drawRow(cs, "Metode", rec.getMetodeBayar(),
+            margin, y, width); y -= lh;
+        drawRow(cs, "Total", rec.getHarga(),
+            margin, y, width); y -= lh;
+
+        // Status
+        cs.setFont(fontBold, 8);
+        drawRow(cs, "Status", rec.getStatus().toUpperCase(),
+            margin, y, width); y -= lh;
+        y -= lh * 0.3f;
+
+        // ── Garis ────────────────────────────────────
+        drawLine(cs, margin, width - margin, y);
+        y -= lh;
+
+        // ── Footer ───────────────────────────────────
+        cs.setFont(fontReg, 7);
+        drawCentered(cs, "Terima kasih telah menggunakan", width, y);
+        y -= lh * 0.9f;
+        drawCentered(cs, "Subscription Manager", width, y);
+        y -= lh * 0.9f;
+        cs.setFont(fontMono, 7);
+        drawCentered(cs, rec.getKode(), width, y);
+
+        cs.close();
+        doc.save(outputPath);
+        doc.close();
+
+        System.out.println("[ExportService] Struk riwayat berhasil: "
             + outputPath);
     }
 

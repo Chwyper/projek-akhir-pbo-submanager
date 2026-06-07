@@ -15,9 +15,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 
 /**
  * CoinHistoryController - Controller untuk coinhistory.fxml
@@ -32,6 +38,55 @@ import java.util.ResourceBundle;
  * - CoinHistoryController ..> SessionManager (ambil user + navigasi)
  */
 public class CoinHistoryController implements Initializable {
+
+    /**
+     * Tampilkan FileChooser lalu cetak bukti top up koin ke PDF.
+     * Hanya dipanggil untuk transaksi bertipe PURCHASE.
+     *
+     * @param rec data transaksi yang akan dicetak
+     */
+    private void cetakStrukRiwayat(TransactionRecord rec) {
+        User user = SessionManager.getCurrentUser();
+        if (user == null) return;
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Simpan Bukti Transaksi");
+        fileChooser.setInitialFileName(
+            "struk_" + rec.getKode() + ".pdf");
+        fileChooser.getExtensionFilters().add(
+            new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        File file = fileChooser.showSaveDialog(
+            SessionManager.getPrimaryStage());
+        if (file == null) return;
+
+        new Thread(() -> {
+            try {
+                ExportService exportService = new ExportService(
+                    user,
+                    new com.subsmanager.currency.CurrencyConverter());
+                exportService.exportReceiptFromRecord(
+                    rec, user, file.getAbsolutePath());
+
+                Platform.runLater(() ->
+                    new Alert(
+                        Alert.AlertType.INFORMATION,
+                        "Struk berhasil disimpan di:\n"
+                        + file.getAbsolutePath())
+                    .showAndWait()
+                );
+            } catch (Exception e) {
+                Platform.runLater(() ->
+                    new Alert(
+                        Alert.AlertType.ERROR,
+                        "Gagal mencetak struk: "
+                        + e.getMessage())
+                    .showAndWait()
+                );
+                e.printStackTrace();
+            }
+        }).start();
+    }
 
     // ── Sidebar ───────────────────────────────────────────
     @FXML private Label userEmailLabel;
@@ -56,6 +111,7 @@ public class CoinHistoryController implements Initializable {
     @FXML private TableColumn<TransactionRecord, String> colHarga;
     @FXML private TableColumn<TransactionRecord, String> colMetode;
     @FXML private TableColumn<TransactionRecord, String> colStatus;
+    @FXML private TableColumn<TransactionRecord, Void>   colAksi;
 
     // ── Label kosong ──────────────────────────────────────
     @FXML private Label emptyLabel;
@@ -140,6 +196,41 @@ public class CoinHistoryController implements Initializable {
 
         colStatus.setCellValueFactory(data ->
             new SimpleStringProperty(data.getValue().getStatus()));
+
+        // Kolom Aksi — tombol Print hanya untuk PURCHASE
+        colAksi.setCellFactory(col -> new TableCell<>() {
+            private final Button btnPrint = new Button("Print");
+            {
+                btnPrint.setStyle(
+                    "-fx-background-color: transparent;"
+                    + "-fx-border-color: #4f46e5;"
+                    + "-fx-border-radius: 5;"
+                    + "-fx-background-radius: 5;"
+                    + "-fx-text-fill: #4f46e5;"
+                    + "-fx-font-size: 11px;"
+                    + "-fx-cursor: hand;"
+                    + "-fx-padding: 3 8 3 8;");
+                btnPrint.setOnAction(e -> {
+                    TransactionRecord rec = getTableView()
+                        .getItems().get(getIndex());
+                    cetakStrukRiwayat(rec);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+                TransactionRecord rec = getTableView()
+                    .getItems().get(getIndex());
+                // Hanya tampilkan tombol untuk transaksi top up
+                setGraphic("PURCHASE".equals(rec.getTipe())
+                    ? btnPrint : null);
+            }
+        });
     }
 
     /**
