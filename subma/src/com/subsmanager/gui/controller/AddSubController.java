@@ -72,10 +72,7 @@ public class AddSubController implements Initializable {
     @FXML private Label previewSiklus;
     @FXML private Label previewTanggal;
 
-    /**
-     * Dummy katalog layanan.
-     * TODO: ganti dengan load dari database nanti.
-     */
+    
     private List<Service> katalogList = new ArrayList<>();
 
     @Override

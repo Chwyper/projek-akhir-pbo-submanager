@@ -175,10 +175,7 @@ public class FinancialController implements Initializable {
         }).start();
     }
 
-    /**
-     * Export ke PDF — membutuhkan 10 koin.
-     * TODO: implementasi generate file PDF
-     */
+ 
     @FXML
     private void handleExportPDF() {
         User user = SessionManager.getCurrentUser();
@@ -256,10 +253,7 @@ public class FinancialController implements Initializable {
         });
     }
 
-    /**
-     * Export ke Excel — membutuhkan 15 koin.
-     * TODO: implementasi generate file Excel
-     */
+
     @FXML
     private void handleExportExcel() {
         User user = SessionManager.getCurrentUser();
